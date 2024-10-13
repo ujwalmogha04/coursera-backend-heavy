@@ -11,4 +11,10 @@ app.use("/api/v1/user" , userRouter)
 app.use("/api/v1/admin" , adminRouter)
 app.use("/api/v1/courses" , courseRouter)
 
-app.listen(3000);
+async function main () {
+    await mongoose.connect("mongodb+srv://Ujwal:Ujwal2510@merncluster.5dodjsu.mongodb.net/Coursera-App");
+    app.listen(3000);
+}
+
+main();
+
