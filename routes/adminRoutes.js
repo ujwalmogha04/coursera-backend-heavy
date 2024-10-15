@@ -1,26 +1,113 @@
-const {Router} = require("express");
+const { Router } = require("express");
 const adminRouter = Router();
-const adminSchema = require("../db")
+const {AdminModel} = require("../db");
+const bcrypt = require("bcrypt");
+const {adminSignupSchema , adminSigninSchema } = require("../schemas/adminSchema");
+const JWT_ADMIN_SECRET = "ujwalAdminSecret";
+const jwt = require("jsonwebtoken");
 
 
-adminRouter.post("/signup" , (req ,res) =>{
-      
+
+adminRouter.post("/signup", async (req, res) => {
+    const {name , email , password} = req.body;
+
+    const validateSchema = adminSignupSchema.safeParse({ name, email, password })
+
+    if (!validateSchema.success) {
+        return res.status(400).json({
+            message: "Validation failed",
+            errors: validateSchema.error.errors
+        })
+    }
+
+    try {
+
+        const exisitingUser = await AdminModel.findOne({ email });
+
+        if (exisitingUser) {
+            return res.status(409).json({
+                message: "user already exists"
+            })
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        await AdminModel.create({
+            name: name,
+            email: email,
+            password: hashedPassword
+        })
+
+        return res.status(201).json({
+            message: "you have succesfully signed up"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "server error",
+            error: error.message
+        })
+    }
 })
 
-adminRouter.post("/signin" , (req ,res) =>{
-    
+adminRouter.post("/signin", async (req, res) => {
+    const {email , password} = req.body;
+
+    const validateSchema = adminSigninSchema.safeParse({ email, password });
+
+    if (!validateSchema.success) {
+        return res.status(400).json({
+            message: "Validation failed",
+            errors: validateSchema.error.errors
+        })
+    };
+
+    try {
+
+        const userExists = await AdminModel.findOne({ email });
+
+        if (!userExists) {
+            return res.status(400).json({
+                message: "User does not exists, signup first"
+            })
+        }
+
+        const matchedPassword = await bcrypt.compare(password , userExists.password);
+
+        if (!matchedPassword) {
+            return res.status(403).json({
+                message: "Invalid credentials"
+            })
+        }
+
+        const token = jwt.sign({
+            id : userExists._id
+        }, JWT_ADMIN_SECRET)
+
+        res.status(200).json({
+            token,
+            message: "you have successsfully signedin",
 })
 
-adminRouter.post("/course" , (req , res)=>{
-    
+    } catch (error) {
+        return res.status(500).json({
+            message: "server error",
+            error: error.message
+        })
+
+    }
 })
 
-adminRouter.put("/course" , (req , res)=>{
-    
+adminRouter.post("/course", (req, res) => {
+
 })
 
-adminRouter.get("/course/bulk" , (req , res)=>{
-    
+adminRouter.put("/course", (req, res) => {
+
+})
+
+adminRouter.get("/course/bulk", (req, res) => {
+
 })
 
 module.exports = {

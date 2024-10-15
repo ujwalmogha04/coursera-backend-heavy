@@ -1,11 +1,11 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const {userRouter} = require("./routes/userRoutes");
 const {courseRouter} = require("./routes/courseRoutes");
 const {adminRouter} = require("./routes/adminRoutes");
 
 const app = express();
+app.use(express.json());
 
 app.use("/api/v1/user" , userRouter)
 app.use("/api/v1/admin" , adminRouter)
