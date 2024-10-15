@@ -3,8 +3,9 @@ const adminRouter = Router();
 const {AdminModel} = require("../db");
 const bcrypt = require("bcrypt");
 const {adminSignupSchema , adminSigninSchema } = require("../schemas/adminSchema");
-const JWT_ADMIN_SECRET = "ujwalAdminSecret";
+const {adminMiddleware} = require("../middlewares/admin");
 const jwt = require("jsonwebtoken");
+const {JWT_ADMIN_SECRET} = require("../config")
 
 
 
@@ -98,7 +99,8 @@ adminRouter.post("/signin", async (req, res) => {
     }
 })
 
-adminRouter.post("/course", (req, res) => {
+adminRouter.post("/course", adminMiddleware ,  (req, res) => {
+
 
 })
 

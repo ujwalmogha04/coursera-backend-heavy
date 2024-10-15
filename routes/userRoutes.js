@@ -4,7 +4,8 @@ const { userSigninSchema, userSignupSchema } = require("../schemas/userSchema");
 const { UserModel } = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const JWT_USER_SECRET = "ujwalUserSecret";
+const {JWT_USER_SECRET} = require("../config")
+const{userMiddleware} = require("../middlewares/user")
 
 userRouter.post("/signup", async (req, res) => {
     const { name, email, password } = req.body;
