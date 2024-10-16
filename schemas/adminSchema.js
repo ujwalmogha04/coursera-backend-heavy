@@ -11,8 +11,15 @@ const adminSigninSchema = z.object({
     password: z.string().min(8).max(20),
 })
 
+const adminCourseSchema = z.object({
+    title : z.string(),
+    description : z.string(),
+    price : Number(),
+    imageUrl : z.string()
+})
 
 module.exports = {
     adminSigninSchema ,
-    adminSignupSchema
+    adminSignupSchema,
+    adminCourseSchema
 }
