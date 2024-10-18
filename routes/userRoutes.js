@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const userRouter = Router();
 const { userSigninSchema, userSignupSchema } = require("../schemas/userSchema");
-const { UserModel } = require("../db");
+const { UserModel, PurchaseModel } = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {JWT_USER_SECRET} = require("../config")
@@ -98,7 +98,22 @@ userRouter.post("/signin", async (req, res) => {
 
 })
 
-userRouter.get("/purchases", (req, res) => {
+userRouter.get("/purchases", userMiddleware , async (req, res) => {
+
+    const userId = req.userId;
+
+    try{
+        const purchases = await PurchaseModel.find({userId});
+
+        res.status(200).json({
+            purchases
+        })
+    }catch(e){
+        return res.status(500).json({
+            message : "server error",
+            error : e.message
+        })
+    }
 
 })
 
