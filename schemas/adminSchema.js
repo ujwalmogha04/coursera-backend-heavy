@@ -14,12 +14,15 @@ const adminSigninSchema = z.object({
 const adminCourseSchema = z.object({
     title : z.string(),
     description : z.string(),
-    price : Number(),
+    price : z.number(),
     imageUrl : z.string()
 })
+
+
 
 module.exports = {
     adminSigninSchema ,
     adminSignupSchema,
-    adminCourseSchema
+    adminCourseSchema,
+
 }

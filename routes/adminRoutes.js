@@ -100,9 +100,10 @@ adminRouter.post("/signin", async (req, res) => {
 })
 
 adminRouter.post("/course", adminMiddleware, async (req, res) => {
-    const { title, description, imageUrl, creatorId, price } = req.body;
+    const { title, description, imageUrl, price } = req.body;
+    const creatorId = req.adminId;
 
-    const validateSchema = adminCourseSchema.safeParse({ title, description, imageUrl, creatorId, price });
+    const validateSchema = adminCourseSchema.safeParse({ title, description, imageUrl, price });
 
     if (!validateSchema.success) {
         return res.status(400).json({
@@ -116,7 +117,7 @@ adminRouter.post("/course", adminMiddleware, async (req, res) => {
 
         return res.status(201).json({
             message: "course created sucessfully",
-            courseId : course._id
+            courseId: course._id
         })
     } catch (err) {
         return res.status(500).json({
@@ -126,12 +127,69 @@ adminRouter.post("/course", adminMiddleware, async (req, res) => {
     }
 })
 
-adminRouter.put("/course", adminMiddleware , async (req, res) => {
-    
+adminRouter.put("/course", adminMiddleware, async (req, res) => {
+    const creatorId = req.adminId;
+    const { courseId, title, description, price, imageUrl } = req.body;
+    const validateSchema = adminCourseSchema.safeParse({ courseId, title, description, price, imageUrl});
+
+    if (!validateSchema.success) {
+        return res.status(400).json({
+            message: "validation failed",
+            error: validateSchema.error.errors
+        })
+    }
+
+    try {
+        const courseExists = await CourseModel.findOne({ _id: courseId, creatorId });
+
+        if (!courseExists) {
+            return res.status(404).json({
+                message: "course does not exists"
+            })
+        }
+
+        await CourseModel.updateOne({ _id: courseId, creatorId }, { title, description, price, imageUrl });
+
+        return res.status(200).json({
+            message: "course updated succesfully",
+            _id: courseId,
+            title: title,
+            description: description,
+            price: price,
+            imageUrl: imageUrl
+        })
+
+    } catch (e) {
+        return res.status(500).json({
+            message: "server error",
+            error: e.message
+        })
+    }
 })
 
-adminRouter.get("/course/bulk", (req, res) => {
+adminRouter.get("/course/bulk", adminMiddleware, async (req, res) => {
+    const creatorId = req.adminId;
 
+    try {
+        const courses = await CourseModel.find({ creatorId });
+
+        if (courses.length === 0) {
+            return res.status(200).json({
+                courses : [],
+                message: "No courses found for this admin"
+            })
+        }
+
+        return res.status(200).json({
+            courses,
+            message: "courses fetched succesfully"
+        })
+    } catch (e) {
+        return res.status(500).json({
+            message: "server error",
+            error: e.message
+        })
+    }
 })
 
 module.exports = {
