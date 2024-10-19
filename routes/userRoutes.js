@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const userRouter = Router();
 const { userSigninSchema, userSignupSchema } = require("../schemas/userSchema");
-const { UserModel, PurchaseModel } = require("../db");
+const { UserModel, PurchaseModel, CourseContentModel } = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {JWT_USER_SECRET} = require("../config")
-const{userMiddleware} = require("../middlewares/user")
+const { JWT_USER_SECRET } = require("../config")
+const { userMiddleware } = require("../middlewares/user")
 
 userRouter.post("/signup", async (req, res) => {
     const { name, email, password } = req.body;
@@ -80,7 +80,7 @@ userRouter.post("/signin", async (req, res) => {
         }
 
         const token = jwt.sign({
-            id : userExists._id
+            id: userExists._id
         }, JWT_USER_SECRET,
         );
 
@@ -98,20 +98,33 @@ userRouter.post("/signin", async (req, res) => {
 
 })
 
-userRouter.get("/purchases", userMiddleware , async (req, res) => {
+userRouter.get("/purchases", userMiddleware, async (req, res) => {
 
     const userId = req.userId;
 
-    try{
-        const purchases = await PurchaseModel.find({userId});
+    try {
+        const purchases = await PurchaseModel.find({ userId }).populate("courseId");
 
+        if (purchases.length === 0) {
+            return res.status(200).json({
+                message: "No purchases found"
+            })
+        }
+
+        const courseIds = purchases.map(purchase => purchase.courseId._id);
+        const courseContent = await CourseContentModel.find({ courseId: { $in: courseIds } });
+
+        if (courseContent.length === 0) {
+            return res.status(404).json({ message: "No content found for the purchased courses" });
+        }
         res.status(200).json({
-            purchases
+            purchases,
+            courseContent
         })
-    }catch(e){
+    } catch (e) {
         return res.status(500).json({
-            message : "server error",
-            error : e.message
+            message: "server error",
+            error: e.message
         })
     }
 
