@@ -102,8 +102,9 @@ adminRouter.post("/signin", async (req, res) => {
 adminRouter.post("/course", adminMiddleware, async (req, res) => {
     const { title, description, imageUrl, price } = req.body;
     const creatorId = req.adminId;
+    const priceInPaise = price * 100;
 
-    const validateSchema = adminCourseSchema.safeParse({ title, description, imageUrl, price });
+    const validateSchema = adminCourseSchema.safeParse({ title, description, imageUrl, price : priceInPaise });
 
     if (!validateSchema.success) {
         return res.status(400).json({
@@ -113,7 +114,7 @@ adminRouter.post("/course", adminMiddleware, async (req, res) => {
     }
 
     try {
-        const course = await CourseModel.create({ title, description, imageUrl, creatorId, price });
+        const course = await CourseModel.create({ title, description, imageUrl, creatorId, price: priceInPaise });
 
         return res.status(201).json({
             message: "course created sucessfully",
@@ -130,7 +131,8 @@ adminRouter.post("/course", adminMiddleware, async (req, res) => {
 adminRouter.put("/course", adminMiddleware, async (req, res) => {
     const creatorId = req.adminId;
     const { courseId, title, description, price, imageUrl } = req.body;
-    const validateSchema = adminCourseSchema.safeParse({ courseId, title, description, price, imageUrl});
+    const priceInPaise = price * 100;
+    const validateSchema = adminCourseSchema.safeParse({ courseId, title, description, price : priceInPaise , imageUrl});
 
     if (!validateSchema.success) {
         return res.status(400).json({
@@ -148,14 +150,14 @@ adminRouter.put("/course", adminMiddleware, async (req, res) => {
             })
         }
 
-        await CourseModel.updateOne({ _id: courseId, creatorId }, { title, description, price, imageUrl });
+        await CourseModel.updateOne({ _id: courseId, creatorId }, { title, description, price : priceInPaise, imageUrl });
 
         return res.status(200).json({
             message: "course updated succesfully",
             _id: courseId,
             title: title,
             description: description,
-            price: price,
+            price: priceInPaise ,
             imageUrl: imageUrl
         })
 
