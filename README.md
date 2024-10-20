@@ -46,21 +46,21 @@ Environment Management: dotenv for handling environment variables
 Installation : 
 
 
-Clone the repository:
+1. Clone the repository:
 git clone https://github.com/yourusername/repository-name.git
 
 
-Install dependencies:
+2. Install dependencies:
 
 npm install
 
-Create a .env file in the root directory and add the following environment variables:
+3. Create a .env file in the root directory and add the following environment variables:
 
-MONGO_URL=your_mongo_db_url
+i) MONGO_URL=your_mongo_db_url
 
-JWT_ADMIN_SECRET=your_admin_jwt_secret
+ii) JWT_ADMIN_SECRET=your_admin_jwt_secret
 
-JWT_USER_SECRET=your_user_jwt_secret
+iii) JWT_USER_SECRET=your_user_jwt_secret
 
 
 Start the development server:
