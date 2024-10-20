@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const {JWT_ADMIN_SECRET} = require("../config");
 
 function adminMiddleware(req, res, next) {
-    const token = req.headers.authorization;
+    const token = req.cookies.token;
 
     if (!token) {
         return res.status(400).json({

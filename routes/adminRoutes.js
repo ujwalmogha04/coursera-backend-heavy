@@ -85,8 +85,13 @@ adminRouter.post("/signin", async (req, res) => {
             id: userExists._id
         }, JWT_ADMIN_SECRET)
 
+        res.cookie( "token" , token , {
+             httpOnly : true,
+             secure: process.env.NODE_ENV === 'production',
+             maxAge : 3600000
+        })
+
         res.status(200).json({
-            token,
             message: "you have successsfully signedin",
         })
 

@@ -84,8 +84,13 @@ userRouter.post("/signin", async (req, res) => {
         }, JWT_USER_SECRET,
         );
 
+        res.cookie("token" , token ,{
+            httpOnly : true,
+            secure : process.env.NODE_ENV === "production",
+            maxAge : 3600000
+        })
+
         return res.status(200).json({
-            token,
             message: "You have successfully signed in",
 
         });
