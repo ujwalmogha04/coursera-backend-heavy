@@ -52,23 +52,23 @@ git clone https://github.com/yourusername/repository-name.git
 
 2. Install dependencies:
 
-npm install
+   npm install
 
 3. Create a .env file in the root directory and add the following environment variables:
 
-i) MONGO_URL=your_mongo_db_url
+   i) MONGO_URL=your_mongo_db_url
 
-ii) JWT_ADMIN_SECRET=your_admin_jwt_secret
+   ii) JWT_ADMIN_SECRET=your_admin_jwt_secret
 
-iii) JWT_USER_SECRET=your_user_jwt_secret
-
-
-Start the development server:
-
-npm node index.js
+   iii) JWT_USER_SECRET=your_user_jwt_secret
 
 
-API Endpoints
+4. Start the development server:
+
+   npm node index.js
+
+
+API Endpoints :
 
 Admin : 
 
