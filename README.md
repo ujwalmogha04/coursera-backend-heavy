@@ -1,6 +1,6 @@
 Course Management Platform
 
-This project is a course management platform where admins can create and manage courses, and users can purchase courses to access the content. The platform includes essential features like authentication using JWT, secure password handling with bcrypt, role-based access control for admin and user functionalities, and schema validation using Zod and protection from attacks like Dos using rate-limiter.
+This is a course management platform where admins can create and manage courses, and users can purchase courses to access the content. The platform includes essential features like authentication using JWT, secure password handling with bcrypt, role-based access control for admin and user functionalities, and schema validation using Zod and protection from attacks like Dos using rate-limiter.
 
 
 Features:
@@ -28,19 +28,19 @@ Features:
 Technologies Used :
 
 
-Backend: Node.js, Express.js, MongoDB
+1. Backend: Node.js, Express.js, MongoDB
 
-Authentication: JWT, bcrypt
+2. Authentication: JWT, bcrypt
 
-Validation: Zod
+3. Validation: Zod
 
-Cookies Handling: cookie-parser
+4. Cookies Handling: cookie-parser
 
-Security: HTTP-only cookies, bcrypt hashing, rate limiting
+5. Security: HTTP-only cookies, bcrypt hashing, rate limiting
 
-Routing: Express Router for modular route structure
+6. Routing: Express Router for modular route structure
 
-Environment Management: dotenv for handling environment variables
+7. Environment Management: dotenv for handling environment variables
 
 
 Installation : 
